@@ -1,5 +1,7 @@
 package com.eduardo.java_spring_rabbitmq_learning.services;
 
+import java.util.logging.Logger;
+
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ public class RabbitMQService {
 	@Autowired
 	private AmqpTemplate amqpTemplate;
 
+	private static final Logger LOGGER = Logger.getLogger(RabbitMQService.class.getName());
+
 	private static final String RABBIT_MQ_EXCHANGE = "JAVA_NEW_DATA_EX";
 	private static final String RABBIT_MQ_ROUTING_KEY = "JAVA_NEW_DATA_ROUTING_KEY_01";
 	private static final String RABBIT_MQ_QUEUE = "JAVA_NEW_DATA_QUEUE_01";
@@ -24,20 +28,20 @@ public class RabbitMQService {
 
 		String strData = mapper.writeValueAsString(data);
 
-		System.out.println("*********************************************************************");
-		System.out.println("Enviando mensagem:");
-		System.out.println(strData);
-		System.out.println("*********************************************************************");
+		LOGGER.info("*********************************************************************");
+		LOGGER.info("Enviando mensagem:");
+		LOGGER.info(strData);
+		LOGGER.info("*********************************************************************");
 
 		this.amqpTemplate.convertAndSend(RABBIT_MQ_EXCHANGE, RABBIT_MQ_ROUTING_KEY, strData);
 	}
 
 	@RabbitListener(queues = RABBIT_MQ_QUEUE)
 	public void receiveMessage(String content) {
-		System.out.println("-------------------------------------------------------------------");
-		System.out.println("Consumindo mensagem:");
-		System.out.println(content);
-		System.out.println("-------------------------------------------------------------------");
+		LOGGER.info("-------------------------------------------------------------------");
+		LOGGER.info("Consumindo mensagem:");
+		LOGGER.info(content);
+		LOGGER.info("-------------------------------------------------------------------");
 	}
 
 }
